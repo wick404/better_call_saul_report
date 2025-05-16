@@ -1,21 +1,28 @@
 ---
-title: "better_call_saul-report"
+title: "Viewership Analysis of *Better Call Saul*"
 author: "Viktor Sas (465692)"
 date: "2025-05-16"
 output: html_document
 ---
+# **_Better Call Saul_**: A Brief Introduction
 
+**_Better Call Saul_** is an American television drama series created by **Vince Gilligan and Peter Gould**. It is a prequel to the critically acclaimed series Breaking Bad and follows the story of Jimmy McGill, a small-time lawyer slowly transforming into the morally flexible Saul Goodman.
+
+**Premiering in 2015** on AMC, the **show ran for 6 seasons** and received critical praise for its writing, acting, and cinematography.
+
+
+# Show Logo
+
+![](https://en.wikipedia.org/wiki/File:Better_Call_Saul_logo.svg)
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(scales)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
+```{r data}
 summary(cars)
 ```
 
@@ -24,7 +31,69 @@ summary(cars)
 You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
-plot(pressure)
+viewership_data <- data.frame(
+  Season = rep(1:6, times = c(10,10,10,10,10,13)),
+  Episode = c(1:10, 1:10, 1:10, 1:10, 1:10, 1:13),
+  Viewers = c(
+    6.88, 3.42, 3.23, 2.87, 2.71, 2.57, 2.67, 2.87, 2.38, 2.53,
+    2.57, 2.23, 2.20, 2.20, 1.99, 2.11, 2.03, 1.93, 2.06, 2.26,
+    1.81, 1.46, 1.52, 1.56, 1.76, 1.72, 1.65, 1.63, 1.47, 1.85,
+    1.77, 1.55, 1.51, 1.53, 1.53, 1.40, 1.35, 1.37, 1.35, 1.53,
+    1.60, 1.06, 1.18, 1.22, 1.45, 1.40, 1.30, 1.42, 1.51, 1.59,
+    1.42, 1.16, 1.16, 1.16, 1.22, 1.13, 1.19, 1.16, 1.22, 1.20, 1.34, 1.32, 1.80
+  )
+)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r summary}
+viewership_summary <- viewership_data %>%
+  group_by(Season) %>%
+  summarise(
+    Min = min(Viewers),
+    Max = max(Viewers),
+    Mean = mean(Viewers),
+    Median = median(Viewers),
+    Episodes = n()
+  )
+
+viewership_summary
+
+```
+
+```{r viewership over time}
+ggplot(viewership_data, aes(x = Episode, y = Viewers, group = Season, color = factor(Season))) +
+  geom_line(size = 1) +
+  geom_point() +
+  labs(
+    title = "Viewership Over Episodes by Season",
+    x = "Episode Number",
+    y = "Viewers (in millions)",
+    color = "Season"
+  ) +
+  theme_minimal()
+
+
+```
+
+
+```{r viewership over time}
+# Create a sequential episode number across all seasons
+viewership_data <- viewership_data %>%
+  mutate(Episode_Sequential = row_number(),
+         Season = as.factor(Season))  # convert Season to factor for coloring
+
+# Plot
+ggplot(viewership_data, aes(x = Episode_Sequential, y = Viewers, fill = Season)) +
+  geom_bar(stat = "identity", color = "black") +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Better Call Saul Viewership by Episode (Sequential)",
+    x = "Episode Number (All Seasons)",
+    y = "Viewers (in millions)",
+    fill = "Season"
+  ) +
+  theme_minimal(base_size = 14)
+
+
+
+```
