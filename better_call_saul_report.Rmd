@@ -2,7 +2,9 @@
 title: "Viewership Analysis of *Better Call Saul*"
 author: "Viktor Sas (465692)"
 date: "2025-05-16"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 # **_Better Call Saul_**: A Brief Introduction
 
@@ -40,7 +42,7 @@ viewership_data <- data.frame(
 
 
 ## Summary of viewership:
-```{r summary}
+```{r summary,echo=FALSE}
 viewership_summary <- viewership_data %>%
   group_by(Season) %>%
   summarise(
@@ -56,7 +58,7 @@ viewership_summary
 ```
 
 ## Viewership over time 1:
-```{r viewership over time}
+```{r viewership over time 1, echo=FALSE}
 ggplot(viewership_data, aes(x = Episode, y = Viewers, group = Season, color = factor(Season))) +
   geom_line(size = 1) +
   geom_point() +
@@ -72,7 +74,7 @@ ggplot(viewership_data, aes(x = Episode, y = Viewers, group = Season, color = fa
 ```
 
 ## Viewership overtime 2:
-```{r viewership over time}
+```{r viewership over time 2, echo=FALSE}
 viewership_data <- viewership_data %>%
   mutate(Episode_Sequential = row_number(),
          Season = as.factor(Season))  #
@@ -94,7 +96,7 @@ ggplot(viewership_data, aes(x = Episode_Sequential, y = Viewers, fill = Season))
 ```
 
 ## Change in viewership between first and last episode of the season:
-```{r change in viewership:}
+```{r change in viewership, echo=FALSE}
 premiere_finale_diff <- viewership_data %>%
   group_by(Season) %>%
   summarise(
@@ -127,8 +129,12 @@ ggplot(premiere_finale_diff, aes(x = Season, y = Diff, fill = Diff > 0)) +
 ```
 ## Key Observations
 
-- The pilot episode had the highest viewership at **6.88 million**, reflecting strong interest due to the *Breaking Bad* connection.
-- Viewership steadily declined across seasons, with Season 6 averaging only about **1.27 million** viewers.
-- A notable drop occurred between Season 1 and Season 2, with the average viewership falling from **3.15** to **2.16 million**.
-- Within seasons, most fluctuations are under **±0.5 million**, except in Season 1 where Episode 2 dropped by **3.46 million** from the premiere.
+- The first episode hat far the highest viewership at **6.88 million**, probably because of the high interest of viewers after *Breaking Bad*, as Better Call Saul is a spin off of it.
+- As the show went on, season on season, the viewership steadily declined, reaching an average of **1.27 million** in season 6.
+- Within season the views were fluctuating less than **+/-0.5 million**, except for Season 1 where Episode 2 dropped by **3.46 million** from the show's premiere.
 
+
+
+
+generative AI was used to:
+- create the dataset based on the show's wiki page where the number of views for all 60+ episodes were listed and also to improve aesthetic
